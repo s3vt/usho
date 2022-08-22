@@ -15,10 +15,13 @@ dpack: clean
  		--workdir /app s3vt/maven:latest mvn install
 
 image: pack
-	docker build --compress -t ${IMAGE_TAG} -f docker/usho/Dockerfile .
+	docker build -t ${IMAGE_TAG} -f docker/usho/Dockerfile .
 
 up: image
 	docker-compose --project-directory . -f docker/docker-compose.yaml up
 
 down:
 	docker-compose -f docker/docker-compose.yaml down
+
+stop:
+	docker-compose -f docker/docker-compose.yaml stop

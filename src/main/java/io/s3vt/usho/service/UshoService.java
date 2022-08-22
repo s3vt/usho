@@ -9,12 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class UshoService {
+    private static final ResponseStatusException UshoNotFoundException
+            = new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Usho does not exist for requested");
+
     @Value("${usho.short.len}")
     private int ushoLength;
 
@@ -31,7 +38,7 @@ public class UshoService {
     @Cacheable(value = "usho")
     public UshoEntity find(String usho) {
         logger.info("Getting detail of usho {}", usho);
-        return repo.findById(usho).orElse(null);
+        return repo.findById(usho).orElseThrow(() -> UshoNotFoundException);
     }
 
     public List<UshoEntity> findAll() {
@@ -41,7 +48,7 @@ public class UshoService {
 
     @CacheEvict("usho")
     public void deleteUsho(String usho) {
-        logger.info("Deelting Usho {}", usho);
+        logger.info("Deleting Usho {}", usho);
         repo.deleteById(usho);
     }
 }

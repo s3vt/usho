@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -35,4 +36,30 @@ public class UshoRestController {
         UshoEntity entity = ushoService.createUsho(longUrl);
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
+
+
+    @ExceptionHandler(value = ResponseStatusException.class)
+    public ErrorResponse handleCustomerAlreadyExistsException(ResponseStatusException ex) {
+        return new ErrorResponse(ex.getRawStatusCode(), ex.getMessage());
+    }
+}
+
+class ErrorResponse {
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    private int statusCode;
+    private String message;
+
+    public ErrorResponse(int code, String message) {
+        this.statusCode = code;
+        this.message = message;
+
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
 }
