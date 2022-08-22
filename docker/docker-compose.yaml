@@ -16,31 +16,47 @@ services:
     healthcheck:
       test:
         [
-          'CMD',
-          '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh'
+          "CMD-SHELL",
+          'mysql -s -u $$MARIADB_USER -p$$MARIADB_PASSWORD -e "show databases;" > /dev/null 2>&1 || exit 1'
         ]
       interval: 15s
       timeout: 5s
       retries: 6
+      start_period: 20s
 
   redis:
     image: redis:alpine
     expose:
-      - "6739"
+      - "6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -w 1 -z localhost 6379 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
   nginx:
     image: nginx:alpine
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:z
     depends_on:
-      - usho
+      usho:
+        condition: service_healthy
     ports:
       - "4000:4000"
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -w 1 -z localhost 4000 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
   usho:
     depends_on:
-      - galera
-      - redis
+      galera:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     image: usho:0.1
     environment:
       - MYSQL_HOST=galera
@@ -52,7 +68,12 @@ services:
       - REDIS_PORT=6379
     expose:
       - "8080"
-    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -w 1 -z $$MYSQL_HOST $$MYSQL_PORT && nc -w 1 -z $$REDIS_HOST $$REDIS_PORT && nc -w 1 -z localhost 8080 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
 volumes:
   usho_galera_data:
