@@ -1,0 +1,58 @@
+services:
+  galera:
+    image: bitnami/mariadb-galera:latest
+    expose:
+      - '3306'
+      - '4444'
+      - '4567'
+      - '4568'
+    volumes:
+      - usho_galera_data:/bitnami/mariadb
+    environment:
+      - MARIADB_DATABASE=usho
+      - MARIADB_USER=ushouser
+      - MARIADB_PASSWORD=password
+      - ALLOW_EMPTY_PASSWORD=yes
+    healthcheck:
+      test:
+        [
+          'CMD',
+          '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh'
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
+  redis:
+    image: redis:alpine
+    expose:
+      - "6739"
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:z
+    depends_on:
+      - usho
+    ports:
+      - "4000:4000"
+
+  usho:
+    depends_on:
+      - galera
+      - redis
+    image: usho:0.1
+    environment:
+      - MYSQL_HOST=galera
+      - MYSQL_PORT=3306
+      - MYSQL_USER=ushouser
+      - MYSQL_DB=usho
+      - MYSQL_PASSWORD=password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    expose:
+      - "8080"
+    restart: on-failure
+
+volumes:
+  usho_galera_data:

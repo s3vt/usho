@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("usho")
 public class UshoRestController {
@@ -16,6 +18,11 @@ public class UshoRestController {
 
     @Autowired
     private UshoService ushoService;
+
+    @GetMapping
+    public ResponseEntity<List<UshoEntity>> getUshos() {
+        return ResponseEntity.status(HttpStatus.OK).body(ushoService.findAll());
+    }
 
 
     @GetMapping("{usho}")

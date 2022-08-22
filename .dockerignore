@@ -2,9 +2,6 @@
 .gitignore
 .git
 .github
-src
-target
-pom.xml
 README.md
 HELP.md
 LICENSE

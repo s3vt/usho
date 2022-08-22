@@ -3,9 +3,10 @@ package io.s3vt.usho.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
-public class UshoEntity {
+public class UshoEntity implements Serializable {
 
     public UshoEntity(String shortUrl, String longUrl) {
         this.shortUrl = shortUrl;

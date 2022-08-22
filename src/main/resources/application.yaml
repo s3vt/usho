@@ -3,7 +3,7 @@ spring:
     type: "redis"
   redis:
     host: "${REDIS_HOST:localhost}"
-    port: "6379"
+    port: "${REDIS_PORT:6379}"
   datasource:
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:usho}"
     username: "${MYSQL_USER:user}"
