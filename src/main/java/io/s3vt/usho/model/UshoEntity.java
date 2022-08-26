@@ -8,13 +8,12 @@ import java.io.Serializable;
 
 @Entity
 public class UshoEntity implements Serializable {
-
-    public UshoEntity(String shortUrl, String longUrl) {
-        this.shortUrl = shortUrl;
-        this.longUrl = longUrl;
+    public String getShortUrl() {
+        return shortUrl;
     }
 
-    public UshoEntity() {
+    public String getLongUrl() {
+        return longUrl;
     }
 
     @Id
@@ -23,19 +22,8 @@ public class UshoEntity implements Serializable {
     @Column(name = "long_url")
     private String longUrl;
 
-    public String getShortUrl() {
-        return shortUrl;
-    }
-
-    public void setShortUrl(String shortUrl) {
+    public UshoEntity(String shortUrl, String longUrl) {
         this.shortUrl = shortUrl;
-    }
-
-    public String getLongUrl() {
-        return longUrl;
-    }
-
-    public void setLongUrl(String longUrl) {
         this.longUrl = longUrl;
     }
 }

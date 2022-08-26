@@ -21,14 +21,11 @@ public class UshoService {
             = new ResponseStatusException(
             HttpStatus.NOT_FOUND,
             "Usho does not exist for requested");
-
-    @Value("${usho.short.len}")
-    private int ushoLength;
-
+    private static final Logger logger = LoggerFactory.getLogger(UshoService.class);
     @Autowired
     UshoRepo repo;
-
-    private static final Logger logger = LoggerFactory.getLogger(UshoService.class);
+    @Value("${usho.short.len}")
+    private int ushoLength;
 
     public UshoEntity createUsho(String longUrl) {
         logger.info("Creating usho for longurl {}", longUrl);

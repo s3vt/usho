@@ -25,7 +25,6 @@ public class UshoRestController {
         return ResponseEntity.status(HttpStatus.OK).body(ushoService.findAll());
     }
 
-
     @GetMapping("{usho}")
     public ResponseEntity<UshoEntity> getUshoById(@PathVariable String usho) {
         return ResponseEntity.status(HttpStatus.OK).body(ushoService.find(usho));
@@ -37,29 +36,27 @@ public class UshoRestController {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
-
     @ExceptionHandler(value = ResponseStatusException.class)
     public ErrorResponse handleCustomerAlreadyExistsException(ResponseStatusException ex) {
         return new ErrorResponse(ex.getRawStatusCode(), ex.getMessage());
     }
 }
 
+
 class ErrorResponse {
-    public int getStatusCode() {
-        return statusCode;
+    private final int statusCode;
+    private final String message;
+
+    public ErrorResponse(int rawStatusCode, String message) {
+        this.statusCode = rawStatusCode;
+        this.message = message;
     }
 
-    private int statusCode;
-    private String message;
-
-    public ErrorResponse(int code, String message) {
-        this.statusCode = code;
-        this.message = message;
-
+    public int getStatusCode() {
+        return statusCode;
     }
 
     public String getMessage() {
         return message;
     }
-
 }
