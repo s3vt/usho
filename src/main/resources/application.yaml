@@ -4,6 +4,8 @@ spring:
   redis:
     host: "${REDIS_HOST:localhost}"
     port: "${REDIS_PORT:6379}"
+    repositories:
+      type: none
   datasource:
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:usho}"
     username: "${MYSQL_USER:user}"
@@ -12,6 +14,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: "update"
+    open-in-view: false
+
 usho:
   short:
     len: 6
+

@@ -8,6 +8,10 @@ import java.io.Serializable;
 
 @Entity
 public class UshoEntity implements Serializable {
+
+    public UshoEntity() {
+    }
+
     public String getShortUrl() {
         return shortUrl;
     }

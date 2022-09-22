@@ -1,6 +1,6 @@
 MVN_REPO=${HOME}/.m2
 CODE_BASE=${PWD}
-IMAGE_TAG=usho:0.1
+IMAGE_TAG=usho:1.0
 
 clean:
 	mvn clean
@@ -17,11 +17,23 @@ dpack: clean
 image: pack
 	docker build -t ${IMAGE_TAG} -f docker/usho/Dockerfile .
 
-up: image
-	docker-compose --project-directory . -f docker/docker-compose.yaml up
+up: pack
+	docker-compose --project-directory . -f docker/docker-compose.yaml up -d --build
 
 down:
 	docker-compose -f docker/docker-compose.yaml down
 
 stop:
 	docker-compose -f docker/docker-compose.yaml stop
+
+logs:
+	docker-compose -f docker/docker-compose.yaml logs --follow
+
+usho:
+	curl  -d '{longUrl: "google.com"}' \
+	-X POST \
+	-H 'Content-Type: application/json' \
+	http://localhost:4000/usho
+
+getall:
+	curl http://localhost:4000/usho | jq

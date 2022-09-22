@@ -22,21 +22,21 @@ services:
       interval: 15s
       timeout: 5s
       retries: 6
-      start_period: 20s
+      start_period: 10s
 
   redis:
     image: redis:alpine
     expose:
       - "6379"
     volumes:
-      - ./docker/redis/redis.conf://usr/local/etc/redis/redis.conf
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
     healthcheck:
       test: [ "CMD-SHELL", "nc -w 1 -z localhost 6379 || exit 1" ]
       interval: 15s
       timeout: 5s
       retries: 6
-      start_period: 20s
+      start_period: 10s
 
   nginx:
     image: nginx:alpine
@@ -52,7 +52,7 @@ services:
       interval: 15s
       timeout: 5s
       retries: 6
-      start_period: 20s
+      start_period: 10s
 
   usho:
     depends_on:
@@ -60,7 +60,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    image: usho:0.1
+    build:
+      context: .
+      dockerfile: docker/usho/Dockerfile
+    image: s3vt/usho:1.0
     environment:
       - MYSQL_HOST=galera
       - MYSQL_PORT=3306
@@ -72,11 +75,11 @@ services:
     expose:
       - "8080"
     healthcheck:
-      test: [ "CMD-SHELL", "nc -w 1 -z $$REDIS_HOST $$REDIS_PORT && nc -w 1 -z localhost 8080 || exit 1" ]
+      test: [ "CMD-SHELL", "nc -w 1 -z localhost 8080 || exit 1" ]
       interval: 15s
       timeout: 5s
       retries: 6
-      start_period: 20s
+      start_period: 10s
 
 volumes:
   usho_galera_data:
